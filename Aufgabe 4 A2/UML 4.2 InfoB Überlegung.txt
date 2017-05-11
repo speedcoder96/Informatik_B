@@ -1,0 +1,37 @@
+Modellieren Sie ein simples soziales Netzwerk.
+Geben Sie an jeder Beziehung Kardinalitäten, Rollen und Namen an.
+Machen Sie das Diagramm außerdem navigierbar.
+
+SocialNetwork
+	users : List<User>
+	forums : List<Forum>	
+	administrations : List<Administration>
+	
+
+User
+	name : String
+	friends : List<User>
+	inbox : List<Message>
+
+	addFriend(user: User)
+	sendMessage(message : Message)
+
+Administrator (extends User)
+	administrations : List<Administration>	
+
+
+Administration
+	forum : Forum
+	administrators : List<Administrator>
+
+Message 
+	text : String
+	author : User
+	replies : List<Message>
+
+	reply(message : Message) : Message
+
+Forum
+	messages : List<Message> 
+	
+	post(message : Message)	
