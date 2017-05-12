@@ -72,7 +72,7 @@ public class AssertionEvaluator {
 		if(assertions.size() != 0) {
 			for(Assertion assertion : assertions) {
 				//calls the toString method of assertion
-				System.out.println(assertion.toString());
+				System.out.println(assertion);
 				System.out.println("#########");
 			}
 		} else {

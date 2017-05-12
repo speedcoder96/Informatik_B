@@ -40,5 +40,4 @@ public abstract class LibraryItem {
     public abstract String getDescription();
 
 
-
 }

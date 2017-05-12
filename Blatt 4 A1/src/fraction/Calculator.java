@@ -7,6 +7,7 @@ public class Calculator {
 
     private static final int NUM_ARGUMENTS = 3;
     private static final String REGEX_OPERATOR_PATTERN = "(\\'\\*\\')|\\/|\\+|\\-";
+    private static final String REGEX_DOUBLE_INT_PATTERN = "-?([1-9]\\d*|0)(\\.\\d+)?";
     private static final String MULTIPLICATION = "'*'";
     private static final String ADDITION = "+";
     private static final String SUBTRACTION = "-";
@@ -20,25 +21,56 @@ public class Calculator {
             String secondNumber = args[2];
             //checks if it is a valid operator
             if (operator.matches(REGEX_OPERATOR_PATTERN)) {
+                Number result = null;
                 switch(operator) {
                     //multiplication case
                     case MULTIPLICATION:
-                        System.out.println(calc.multiply(firstNumber, secondNumber));
+                        result = calc.multiply(firstNumber, secondNumber);
+                        if(result != null) {
+                            System.out.println(result);
+                        } else {
+                            System.err.println("Number Parsing Error");
+                            printOptions();
+                        }
                         break;
                     //addition case
                     case ADDITION:
-                        System.out.println(calc.add(firstNumber, secondNumber));
+                        result = calc.add(firstNumber, secondNumber);
+                        if(result != null) {
+                            System.out.println(result);
+                        } else {
+                            System.err.println("Number Parsing Error");
+                            printOptions();
+                        }
                         break;
                     //subtraction case
                     case SUBTRACTION:
-                        System.out.println(calc.subtract(firstNumber, secondNumber));
+                        result = calc.subtract(firstNumber, secondNumber);
+                        if(result != null) {
+                            System.out.println(result);
+                        } else {
+                            System.err.println("Number Parsing Error");
+                            printOptions();
+                        }
                         break;
                     //division case
                     case DIVISION:
-                        System.out.println(calc.divide(firstNumber, secondNumber));
+                        result = calc.divide(firstNumber, secondNumber);
+                        if(result != null) {
+                            System.out.println(result);
+                        } else {
+                            System.err.println("Number Parsing Error");
+                            printOptions();
+                        };
                         break;
                 }
+            } else {
+                System.err.println("Invalid Operator");
+                printOptions();
             }
+        } else {
+            System.err.println("Argument Count Failure!");
+            printOptions();
         }
     }
 
@@ -56,7 +88,11 @@ public class Calculator {
         if(p instanceof Fraction && q instanceof Fraction) {
             result = ((Fraction) p).add((Fraction)q);
         } else {
-            result = p.floatValue() + q.floatValue();
+            if(p != null && q != null) {
+                result = p.doubleValue() * q.doubleValue();
+            } else {
+                return null;
+            }
         }
         return result;
     }
@@ -75,7 +111,11 @@ public class Calculator {
         if(p instanceof Fraction && q instanceof Fraction) {
             result = ((Fraction) p).subtract((Fraction)q);
         } else {
-            result = p.floatValue() - q.floatValue();
+            if(p != null && q != null) {
+                result = p.doubleValue() * q.doubleValue();
+            } else {
+                return null;
+            }
         }
         return result;
     }
@@ -85,7 +125,7 @@ public class Calculator {
      * and performs the multiplication operation on them
      * @param a the first string represented number
      * @param b the second string represented number
-     * @return the number representing the result
+     * @return the number representing the result, otherwise null
      */
     public Number multiply(String a, String b) {
         Number p = parseArgument(a);
@@ -94,7 +134,11 @@ public class Calculator {
         if(p instanceof Fraction && q instanceof Fraction) {
             result = ((Fraction) p).multiply((Fraction)q);
         } else {
-            result = p.floatValue() * q.floatValue();
+            if(p != null && q != null) {
+                result = p.doubleValue() * q.doubleValue();
+            } else {
+                return null;
+            }
         }
         return result;
     }
@@ -113,7 +157,7 @@ public class Calculator {
         if(p instanceof Fraction && q instanceof Fraction) {
             result = ((Fraction) p).divide((Fraction)q);
         } else {
-            result = p.floatValue() / q.floatValue();
+            result = p.doubleValue() / q.doubleValue();
         }
         return result;
     }
@@ -122,13 +166,15 @@ public class Calculator {
      * Parses one string represented number to a Number
      * object.
      * @param n the string to parse
-     * @return the parsed Number object
+     * @return the parsed Number object, otherwise null
      */
     private Number parseArgument(String n) {
         if(n.matches(Fraction.FRACTION_REGEX)) {
             return Fraction.parseFraction(n);
+        } else if(n.matches(REGEX_DOUBLE_INT_PATTERN)) {
+            return Double.parseDouble(n);
         } else {
-            return Float.parseFloat(n);
+            return null;
         }
     }
 
@@ -137,9 +183,10 @@ public class Calculator {
      * on the console
      */
     private static void printOptions() {
-        System.out.println("Geben Sie einen Bruch gefolgt von einen der\n"
-                + "gueltigen Operatoren '+ '*' - /' gefolgt von einem zweiten\n"
-                + "Bruch hintereinander ein! (Zwischen Bruch und Operator\n"
+        System.out.println("Geben Sie einen Bruch/Ganzzahl/Fließkommazahl " +
+                "gefolgt von einen der\ngueltigen Operatoren '+ '*' - /' " +
+                "gefolgt von einem zweiten\nBruch/Ganzzahl/Fließkommazahl " +
+                "hintereinander ein! (Zwischen Bruch und Operator\n"
                 + "und dem anderen Bruch sind Leerzeichen zu setzen!)");
     }
 }

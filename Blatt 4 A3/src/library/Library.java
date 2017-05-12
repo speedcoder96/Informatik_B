@@ -5,6 +5,7 @@ package library;
  */
 public class Library {
 
+    //TODO This inventory attribute isn't defined in UML diagram ?!?!
     private List inventory;
 
     public Library() {
