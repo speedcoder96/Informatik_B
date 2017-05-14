@@ -89,7 +89,7 @@ public class Calculator {
             result = ((Fraction) p).add((Fraction)q);
         } else {
             if(p != null && q != null) {
-                result = p.doubleValue() * q.doubleValue();
+                result = p.doubleValue() + q.doubleValue();
             } else {
                 return null;
             }
