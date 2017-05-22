@@ -5,11 +5,11 @@ import test.core.Assertion;
 public abstract class ValueAssertion extends Assertion {
 
 	public static final String TO_STRING_FORMAT = "Test:\t[name]\nExp:\t[exp]\nAct:\t[act]\nStat:\t[stat]";
-	
+
 	public ValueAssertion(String name) {
 		super(name);
 	}
-	
+
 	public String buildSummaryString(String expected, String actual) {
 		String nameTag = (getName() != null) ? getName() : "NO NAME";
 		String expectedTag = (expected != null) ? expected : "NO EXPECTED VALUE";
@@ -21,5 +21,7 @@ public abstract class ValueAssertion extends Assertion {
 				.replace(ACTUAL_TAG, actualTag)
 				.replace(STATUS_TAG, statusTag);
 	}
+
+
 
 }

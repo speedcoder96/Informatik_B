@@ -37,6 +37,11 @@ public abstract class Assertion {
 	 * or failed
 	 */
 	private boolean passed;
+
+	/**
+	 * inverts the result of an assertion
+	 */
+	private boolean inverted;
 	
 	/**
 	 * holds the state of whether or not an assertion is evaluated
@@ -56,6 +61,15 @@ public abstract class Assertion {
 	public Assertion(String name) {
 		this.name = name;
 		this.evaluated = false;
+		this.inverted = false;
+	}
+
+	public void setInverted(boolean inverted) {
+		this.inverted = inverted;
+	}
+
+	public boolean isInverted() {
+		return inverted;
 	}
 	
 	/**

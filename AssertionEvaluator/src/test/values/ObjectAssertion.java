@@ -2,10 +2,10 @@ package test.values;
 
 public class ObjectAssertion extends ValueAssertion {
 	
-	private Object expected;
-	private Object actual;
+	protected Object expected;
+	protected Object actual;
 
-	private ObjectAssertion(String name, Object expected, Object actual) {
+	protected ObjectAssertion(String name, Object expected, Object actual) {
 		super(name);
 		this.expected = expected;
 		this.actual = actual;

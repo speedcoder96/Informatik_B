@@ -10,7 +10,6 @@ public class BooleanAssertion extends ValueAssertion {
 		this.expected = expected;
 		this.actual = actual;
 	}
-	
 
 	@Override
 	public void evaluate() {
@@ -32,6 +31,16 @@ public class BooleanAssertion extends ValueAssertion {
 
 	public static BooleanAssertion create(String name, boolean expected, boolean actual) {
 		return new BooleanAssertion(name, expected, actual);
+	}
+
+	public static BooleanAssertion createInverted(String name, boolean expected, boolean actual) {
+		BooleanAssertion bAssertion = create(name, expected, actual);
+		bAssertion.setInverted(true);
+		return bAssertion;
+	}
+
+	public static BooleanAssertion createInverted(boolean expected, boolean actual) {
+		return createInverted(null, expected, actual);
 	}
 
 
