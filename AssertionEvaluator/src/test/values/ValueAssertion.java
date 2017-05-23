@@ -4,7 +4,7 @@ import test.core.Assertion;
 
 public abstract class ValueAssertion extends Assertion {
 
-	public static final String TO_STRING_FORMAT = "Test:\t[name]\nExp:\t[exp]\nAct:\t[act]\nStat:\t[stat]";
+	private static final String TO_STRING_FORMAT = "Test:\t[name]\nExp:\t[exp]\nAct:\t[act]\nStat:\t[stat]";
 
 	public ValueAssertion(String name) {
 		super(name);

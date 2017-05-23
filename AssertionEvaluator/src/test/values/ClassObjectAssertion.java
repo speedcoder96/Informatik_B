@@ -10,7 +10,7 @@ public class ClassObjectAssertion extends ObjectAssertion {
     }
 
     @Override
-    public void evaluate() {
+    public void eval() {
         if(expected != null && actual != null) {
             if(expected.getClass() == actual.getClass()) {
                 markedAsPassed();
@@ -33,5 +33,15 @@ public class ClassObjectAssertion extends ObjectAssertion {
 
     public static ClassObjectAssertion create(Object expected, Object actual) {
         return create(null, expected, actual);
+    }
+
+    public static ClassObjectAssertion createInverted(String name, Object expected, Object actual) {
+        ClassObjectAssertion assertion = create(name, expected, actual);
+        assertion.setInverted(true);
+        return assertion;
+    }
+
+    public static ClassObjectAssertion createInverted(Object expected, Object actual) {
+        return createInverted(null, expected, actual);
     }
 }

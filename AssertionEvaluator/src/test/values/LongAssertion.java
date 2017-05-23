@@ -12,7 +12,7 @@ public class LongAssertion extends ValueAssertion {
 	}
 
 	@Override
-	public void evaluate() {
+	public void eval() {
 		if(expected == actual) {
 			markedAsPassed();
 		} else {
@@ -33,5 +33,13 @@ public class LongAssertion extends ValueAssertion {
 		return create(null, expected, actual);
 	}
 
+	public static LongAssertion createInverted(String name, long expected, long actual) {
+		LongAssertion assertion = create(name, expected, actual);
+		assertion.setInverted(true);
+		return assertion;
+	}
 
+	public static LongAssertion createInverted(long expected, long actual) {
+		return createInverted(null, expected, actual);
+	}
 }

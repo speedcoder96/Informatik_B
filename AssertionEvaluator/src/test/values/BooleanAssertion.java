@@ -12,7 +12,7 @@ public class BooleanAssertion extends ValueAssertion {
 	}
 
 	@Override
-	public void evaluate() {
+	public void eval() {
 		if(expected == actual) {
 			markedAsPassed();
 		} else {
@@ -34,9 +34,9 @@ public class BooleanAssertion extends ValueAssertion {
 	}
 
 	public static BooleanAssertion createInverted(String name, boolean expected, boolean actual) {
-		BooleanAssertion bAssertion = create(name, expected, actual);
-		bAssertion.setInverted(true);
-		return bAssertion;
+		BooleanAssertion assertion = create(name, expected, actual);
+		assertion.setInverted(true);
+		return assertion;
 	}
 
 	public static BooleanAssertion createInverted(boolean expected, boolean actual) {

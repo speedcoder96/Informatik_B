@@ -12,7 +12,7 @@ public class DoubleAssertion extends ValueAssertion {
 	}
 
 	@Override
-	public void evaluate() {
+	public void eval() {
 		if(expected == actual) {
 			markedAsPassed();
 		} else {
@@ -31,6 +31,16 @@ public class DoubleAssertion extends ValueAssertion {
 	
 	public static DoubleAssertion create(double expected, double actual) {
 		return create(null, expected, actual);
+	}
+
+	public static DoubleAssertion createInverted(String name, double expected, double actual) {
+		DoubleAssertion assertion = create(name, expected, actual);
+		assertion.setInverted(true);
+		return assertion;
+	}
+
+	public static DoubleAssertion createInverted(double expected, double actual) {
+		return createInverted(null, expected, actual);
 	}
 	
 

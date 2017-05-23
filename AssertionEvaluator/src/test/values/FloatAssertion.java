@@ -12,7 +12,7 @@ public class FloatAssertion extends ValueAssertion {
 	}
 
 	@Override
-	public void evaluate() {
+	public void eval() {
 		if(expected == actual) {
 			markedAsPassed();
 		} else {
@@ -31,6 +31,16 @@ public class FloatAssertion extends ValueAssertion {
 	
 	public static FloatAssertion create(float expected, float actual) {
 		return create(null, expected, actual);
+	}
+
+	public static FloatAssertion createInverted(String name, float expected, float actual) {
+		FloatAssertion assertion = create(name, expected, actual);
+		assertion.setInverted(true);
+		return assertion;
+	}
+
+	public static FloatAssertion createInverted(float expected, float actual) {
+		return createInverted(null, expected, actual);
 	}
 
 

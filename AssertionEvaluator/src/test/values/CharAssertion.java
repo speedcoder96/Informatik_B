@@ -12,7 +12,7 @@ public class CharAssertion extends ValueAssertion {
 	}
 
 	@Override
-	public void evaluate() {
+	public void eval() {
 		if(expected == actual) {
 			markedAsPassed();
 		} else {
@@ -31,5 +31,15 @@ public class CharAssertion extends ValueAssertion {
 
 	public static CharAssertion create(char expected, char actual) {
 		return create(null, expected, actual);
+	}
+
+	public static CharAssertion createInverted(String name, char expected, char actual) {
+		CharAssertion assertion = create(name, expected, actual);
+		assertion.setInverted(true);
+		return assertion;
+	}
+
+	public static CharAssertion createInverted(char expected, char actual) {
+		return createInverted(null, expected, actual);
 	}
 }

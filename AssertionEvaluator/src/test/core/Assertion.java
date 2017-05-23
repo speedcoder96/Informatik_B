@@ -8,7 +8,7 @@ package test.core;
  * 
  * This abstract class defines every attribute and method
  * an assertion should have, in order to get evaluated by
- * AssertionEvaluator class.
+ * Evaluator class.
  */
 public abstract class Assertion {
 	
@@ -118,24 +118,29 @@ public abstract class Assertion {
 	 * Marks an assertion as passed
 	 */
 	public void markedAsPassed() {
-		passed = true;
-		status = Assertion.STATUS_PASSED;
 		evaluated = true;
+		passed = !inverted;
+		status = (passed) ? Assertion.STATUS_PASSED : Assertion.STATUS_FAILED;
 	}
 	
 	/**
 	 * Marks an assertion as failed
 	 */
 	public void markedAsFailed() {
-		passed = false;
-		status = Assertion.STATUS_FAILED;
 		evaluated = true;
+		passed = inverted;
+		status = (passed) ? Assertion.STATUS_PASSED : Assertion.STATUS_FAILED;
 	}
 	
 	/**
-	 * Abstract methods all assertion have to implement
+	 * Evaluates an assertion
 	 */
-	public abstract void evaluate();
+	public abstract void eval();
+
+    /**
+     * Returns a string representation of the assertion
+     * @return string representation
+     */
 	public abstract String toString();
 	
 }
