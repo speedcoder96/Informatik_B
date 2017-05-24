@@ -9,10 +9,7 @@ import java.util.List;
  * @author Tim Adam
  * @version 1.0 08.05.2017
  * 
- * The Evaluator class is a singleton.
- * If all assertions are registered to this class the call of
- * the printSummary method provides the information about whether 
- * or not a test has passed and how many have passed. 
+ * Evaluator
  */
 public class Evaluator {
 
@@ -65,11 +62,9 @@ public class Evaluator {
 	}
 
     /**
-     * Prints a pre summary of all registered
-     * assertions. Lists the number of passed and
-     * failed assertions and the over all percentage
+     * Prints stats of all registered assertions
      */
-	public void preSummary() {
+	public void printNumericStats() {
 		int failCount = 0;
 		if(assertions.size() != 0) {
 			for(Assertion assertion : assertions) {
@@ -89,7 +84,8 @@ public class Evaluator {
 		System.out.printf("Tests fail.:\t%d / %d", failCount, count);
         System.out.println();
         System.out.printf("Tests perc.:\t%f", percentage);
-    }
+		System.out.println();
+	}
 	
 	/**
 	 * Prints a summary of all registered assertions
@@ -104,6 +100,7 @@ public class Evaluator {
 		} else {
 			System.err.println("There is no test to eval!");
 		}
+		printNumericStats();
 	}
 
     /**

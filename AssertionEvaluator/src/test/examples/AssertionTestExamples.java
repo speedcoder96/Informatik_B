@@ -55,9 +55,8 @@ public class AssertionTestExamples {
         Evaluator.getInstance().eval(IntValueRangeAssertion.createInverted(50, 100, 75));
 
 
-        //prints a pre summary containing the number of
-        //failed and passed tests
-        //Evaluator.getInstance().preSummary();
+        //prints the numeric stats of all tests
+        //Evaluator.getInstance().printNumericStats();
 
         //prints summary every evaluated test
         //Evaluator.getInstance().printSummary();
