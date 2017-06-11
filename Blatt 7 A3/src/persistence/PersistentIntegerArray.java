@@ -113,7 +113,7 @@ public class PersistentIntegerArray implements AutoCloseable {
      */
     private boolean seekPositionIfExist(int i) throws IOException {
         if(i >= 0 && i < length()) {
-            rndAccessFile.seek(i);
+            rndAccessFile.seek(i * Integer.BYTES);
             return true;
         } else {
             return false;

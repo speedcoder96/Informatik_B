@@ -2,6 +2,7 @@ package persistence;
 
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Created by Rene Sommerfeld on 09.06.2017.
@@ -17,7 +18,7 @@ public class PersistentArrayTest {
         testLoadAndChangeElements();
         testSetIndex();
         testGetIndex();
-        //Assertion.getInstance().printResults();
+        Assertion.results();
     }
 
     private static void testCreatePersistentIntegerArray() {
@@ -37,9 +38,9 @@ public class PersistentArrayTest {
                 copyArray[i] = b.get(i);
             }
 
-            Assertion.getInstance().createTest();
-            Assertion.getInstance().nameTest("Same Elements Check");
-            Assertion.getInstance().assertEquals(TEST_ARRAY, copyArray);
+            Assertion.create();
+            Assertion.name("Same Elements Check");
+            Assertion.equals(TEST_ARRAY, copyArray);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,9 +59,9 @@ public class PersistentArrayTest {
                 copyArray[i] = b.get(i);
             }
 
-            Assertion.getInstance().createTest();
-            Assertion.getInstance().nameTest("Same Elements Check After Setting");
-            Assertion.getInstance().assertEquals(originalArray, copyArray);
+            Assertion.create();
+            Assertion.name("Same Elements Check After Setting");
+            Assertion.equals(originalArray, copyArray);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,23 +70,23 @@ public class PersistentArrayTest {
 
     //checks exception
     private static void testSetIndex() {
-        Assertion.getInstance().createTest();
-        Assertion.getInstance().nameTest("Try Setting At Index -3 -> ArrayIndexOutOfBounds");
+        Assertion.create();
+        Assertion.name("Try Setting At Index -3 -> ArrayIndexOutOfBounds");
         try (PersistentIntegerArray b = new PersistentIntegerArray("array.dat")) {
             b.set(-3, 20);
         } catch (Exception e) {
-            Assertion.getInstance().assertEquals(ArrayIndexOutOfBoundsException.class, e.getClass());
+            Assertion.equals(ArrayIndexOutOfBoundsException.class, e.getClass());
         }
     }
 
     //checks exception
     private static void testGetIndex() {
-        Assertion.getInstance().createTest();
-        Assertion.getInstance().nameTest("Try Getting At Index -3 -> ArrayIndexOutOfBounds");
+        Assertion.create();
+        Assertion.name("Try Getting At Index -3 -> ArrayIndexOutOfBounds");
         try (PersistentIntegerArray b = new PersistentIntegerArray("array.dat")) {
             Integer result = b.get(-3);
         } catch (Exception e) {
-            Assertion.getInstance().assertEquals(ArrayIndexOutOfBoundsException.class, e.getClass());
+            Assertion.equals(ArrayIndexOutOfBoundsException.class, e.getClass());
         }
     }
 

@@ -2,6 +2,7 @@ package persistence;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public final class Assertion {
     /**
      * Defines the default test name prefix for each test units name
      */
-    public static final String TEST_DEFAULT_NAME_PREFIX = "Test ";
+    public static final String TEST_DEFAULT_NAME_PREFIX = "TestUnit ";
 
     /**
      * Defines the default failed message for a test unit
@@ -32,20 +33,20 @@ public final class Assertion {
     /**
      * Holds each registered test unit
      */
-    private List<Test> tests;
+    private List<TestUnit> testUnits;
 
     /**
-     * Defines the index of the current created test
+     * Defines current created test unit
      */
-    private int currentTest;
+    private TestUnit currentTestUnit;
 
     /**
      * Private constructor in order to stick to the rules
      * of singleton pattern
      */
     private Assertion() {
-        tests = new ArrayList<>();
-        currentTest = -1;
+        testUnits = new ArrayList<>();
+        currentTestUnit = null;
     }
 
     /**
@@ -61,13 +62,20 @@ public final class Assertion {
 
     /**
      * Creates a new test unit. Any call of the methods
-     * like {@link #nameTest(String)}, {@link #setPassedMessage(String)},
+     * like {@link #nameTestUnit(String)}, {@link #setPassedMessage(String)},
      * or {@link #setFailedMessage(String)} will refer to the test unit created
      * by invoking this method.
      */
-    public void createTest() {
-        currentTest++;
-        tests.add(new Test(TEST_DEFAULT_NAME_PREFIX + currentTest));
+    public void createTestUnit() {
+        currentTestUnit = new TestUnit(TEST_DEFAULT_NAME_PREFIX + (testUnits.size() + 1));
+        testUnits.add(currentTestUnit);
+    }
+
+    /**
+     * Short cut method. Calls {@link #createTestUnit()}
+     */
+    public static void create() {
+        getInstance().createTestUnit();
     }
 
     /**
@@ -77,22 +85,31 @@ public final class Assertion {
      * created yet.
      */
     private boolean isTestAvailable() {
-        if(currentTest >= 0) {
+        if(currentTestUnit != null) {
             return true;
         } else {
             throw new Assertion.NoSuchAssertionTestException("There is no Assertion test unit to name. " +
-                    "Please invoke createTest method.");
+                    "Please invoke createTestUnit method.");
+        }
+    }
+
+
+    /**
+     * Names the current test created by {@link #createTestUnit()}.
+     * @param name the name of the test unit
+     */
+    public void nameTestUnit(String name) {
+        if(isTestAvailable()) {
+            currentTestUnit.setName(name);
         }
     }
 
     /**
-     * Names the current test created by {@link #createTest()}.
+     * Short cut method. Calls {@link #nameTestUnit(String)}
      * @param name the name of the test unit
      */
-    public void nameTest(String name) {
-        if(isTestAvailable()) {
-            tests.get(currentTest).setName(name);
-        }
+    public static void name(String name) {
+        getInstance().nameTestUnit(name);
     }
 
     /**
@@ -101,8 +118,16 @@ public final class Assertion {
      */
     public void setPassedMessage(String passedMessage) {
         if(isTestAvailable()) {
-            tests.get(currentTest).setPassedStatusMessage(passedMessage);
+            currentTestUnit.setPassedStatusMessage(passedMessage);
         }
+    }
+
+    /**
+     * Short cut method. Calls {@link #setPassedMessage(String)}
+     * @param positiveMessage
+     */
+    public static void posMessage(String positiveMessage) {
+        getInstance().setPassedMessage(positiveMessage);
     }
 
     /**
@@ -111,39 +136,84 @@ public final class Assertion {
      */
     public void setFailedMessage(String failedMessage) {
         if(isTestAvailable()) {
-            tests.get(currentTest).setFailedStatusMessage(failedMessage);
+            currentTestUnit.setFailedStatusMessage(failedMessage);
         }
+    }
+
+    /**
+     * Short cut method. Calls {@link #setFailedMessage(String)}
+     * @param negativeMessage
+     */
+    public static void negMessage(String negativeMessage) {
+        getInstance().setFailedMessage(negativeMessage);
     }
 
     /**
      * Prints the results
      */
     public void printResults() {
+        int failCount = 0;
         if(isTestAvailable()) {
-            for(Test test : tests) {
+            for(TestUnit testUnit : testUnits) {
                 System.out.println("########");
-                System.out.println(test);
+                System.out.println(testUnit);
                 System.out.println("########");
+                if(!testUnit.isPassed()) {
+                    failCount++;
+                }
             }
         }
+        int testCount = testUnits.size();
+        System.out.println("######Report######");
+        System.out.printf("%d/%d have passed! \n", testCount - failCount, testCount);
+        System.out.printf("%d/%d have failed! \n", failCount, testCount);
+        System.out.println("############");
     }
 
-
+    /**
+     * Short cut method. Calls {@link #printResults}
+     *
+     */
+    public static void results() {
+        getInstance().printResults();
+    }
 
     /**
      *
      * @param actual
      */
     public void assertTrue(boolean actual) {
+        setCurrentExpected("true");
+        setCurrentActual(String.valueOf(actual));
         if(actual) {
             markCurrentAsPassed();
         } else {
+            setCurrentFailureMessage(TestUnit.FAILURE_NOT_EQUAL);
             markCurrentAsFailed();
         }
     }
 
+    /**
+     * Short cut method. Calls {@link #assertTrue(boolean)}
+     */
+    public static void assTrue(boolean actual) {
+        getInstance().assertTrue(actual);
+    }
+
+    /**
+     *
+     * @param actual
+     */
     public void assertFalse(boolean actual) {
         assertTrue(!actual);
+    }
+
+    /**
+     * Short cut method. Calls {@link #assertFalse(boolean)}
+     * @param actual
+     */
+    public static void assFalse(boolean actual) {
+        getInstance().assertFalse(actual);
     }
 
     /**
@@ -155,6 +225,14 @@ public final class Assertion {
     }
 
     /**
+     * Short cut method. Calls {@link #assertNull(Object)}
+     * @param actual
+     */
+    public static void assNull(boolean actual) {
+        getInstance().assertNull(actual);
+    }
+
+    /**
      *
      * @param expected
      * @param actual
@@ -163,8 +241,25 @@ public final class Assertion {
         if(expected != null && actual != null) {
             assertTrue(expected.equals(actual));
         } else {
-            setCurrentFailureMessage(Test.FAILURE_NULL_ARRAY_REFERENCE);
+            setCurrentFailureMessage(TestUnit.FAILURE_NULL_ARRAY_REFERENCE);
             markCurrentAsFailed();
+        }
+        setCurrentExpected(expected);
+        setCurrentActual(actual);
+    }
+
+    /**
+     * Short cut method. Calls {@link #assertEquals(String, String)}
+     * @param actual
+     * @param expected
+     * @param actual
+     */
+    public static void equals(String expected, String actual) {
+        if(expected != null && actual != null) {
+            assTrue(expected.equals(actual));
+        } else {
+            getInstance().setCurrentFailureMessage(TestUnit.FAILURE_NULL_ARRAY_REFERENCE);
+            getInstance().markCurrentAsFailed();
         }
     }
 
@@ -175,29 +270,41 @@ public final class Assertion {
      * @param <T>
      */
     public <T> void assertEquals(T[] expected, T[] actual) {
+        StringBuilder expectedBuilder = new StringBuilder();
+        StringBuilder actualBuilder = new StringBuilder();
         if(expected != null && actual != null) {
             if(expected.length == actual.length) {
                 for(int i = 0; i < expected.length; i++) {
+                    buildStringRepresentation(expectedBuilder, expected[i], i == expected.length - 1);
+                    buildStringRepresentation(actualBuilder, actual[i], i == expected.length - 1);
                     if(expected[i] != null && actual[i] != null) {
                         if(!expected[i].equals(actual[i])) {
-                            setCurrentFailureMessage(Test.FAILURE_NOT_EQUAL);
+                            setCurrentFailureMessage(TestUnit.FAILURE_NOT_EQUAL);
                             markCurrentAsFailed();
-                            break;
+                            return;
                         }
                     } else {
-                        setCurrentFailureMessage(Test.FAILURE_NULL_ELEMENT_REFERENCE);
+                        setCurrentFailureMessage(TestUnit.FAILURE_NULL_ELEMENT_REFERENCE);
                         markCurrentAsFailed();
-                        break;
+                        return;
                     }
                 }
+                markCurrentAsPassed();
             } else {
-                setCurrentFailureMessage(Test.FAILURE_DIFFERENT_LENGTH);
+                setCurrentFailureMessage(TestUnit.FAILURE_DIFFERENT_LENGTH);
                 markCurrentAsFailed();
             }
         } else {
-            setCurrentFailureMessage(Test.FAILURE_NULL_ARRAY_REFERENCE);
+            setCurrentFailureMessage(TestUnit.FAILURE_NULL_ARRAY_REFERENCE);
             markCurrentAsFailed();
         }
+        setCurrentExpected(expectedBuilder.toString());
+        setCurrentActual(actualBuilder.toString());
+        System.out.println(actualBuilder.toString());
+    }
+
+    public static <T> void equals(T[] expected, T[] actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -207,7 +314,44 @@ public final class Assertion {
      * @param <T>
      */
     public <T> void assertEquals(Collection<T> expected, Collection<T> actual) {
+        StringBuilder expectedBuilder = new StringBuilder();
+        StringBuilder actualBuilder = new StringBuilder();
+        if(expected != null && actual != null) {
+            if(expected.size() == actual.size()) {
+                Iterator<T> expectedIterator = expected.iterator();
+                Iterator<T> actualIterator = actual.iterator();
+                while(expectedIterator.hasNext()) {
+                    T expectedElem = expectedIterator.next();
+                    T actualElem = actualIterator.next();
+                    buildStringRepresentation(expectedBuilder, expectedElem, expectedIterator.hasNext());
+                    buildStringRepresentation(actualBuilder, actualElem, actualIterator.hasNext());
+                    if(expectedElem != null && actualElem != null) {
+                        if(!expectedElem.equals(actualElem)) {
+                            setCurrentFailureMessage(TestUnit.FAILURE_NOT_EQUAL);
+                            markCurrentAsFailed();
+                            return;
+                        }
+                    } else {
+                        setCurrentFailureMessage(TestUnit.FAILURE_NULL_ELEMENT_REFERENCE);
+                        markCurrentAsFailed();
+                        return;
+                    }
+                }
+                markCurrentAsPassed();
+            } else {
+                setCurrentFailureMessage(TestUnit.FAILURE_DIFFERENT_LENGTH);
+                markCurrentAsFailed();
+            }
+        } else {
+            setCurrentFailureMessage(TestUnit.FAILURE_NULL_ARRAY_REFERENCE);
+            markCurrentAsFailed();
+        }
+        setCurrentExpected(expectedBuilder.toString());
+        setCurrentActual(actualBuilder.toString());
+    }
 
+    public static <T> void equals(Collection<T> expected, Collection<T> actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -219,9 +363,15 @@ public final class Assertion {
         if(expected != null && actual != null) {
             assertTrue(expected.equals(actual));
         } else {
-            setCurrentFailureMessage(Test.FAILURE_NULL_ELEMENT_REFERENCE);
+            setCurrentFailureMessage(TestUnit.FAILURE_NULL_ELEMENT_REFERENCE);
             markCurrentAsFailed();
         }
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
+    }
+
+    public static void equals(Class<?> expected, Class<?> actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -230,7 +380,13 @@ public final class Assertion {
      * @param actual
      */
     public void assertEquals(boolean expected, boolean actual) {
+        assertTrue(expected == actual);
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
+    }
 
+    public static void equals(boolean expected, boolean actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -239,7 +395,13 @@ public final class Assertion {
      * @param actual
      */
     public void assertEquals(char expected, char actual) {
+        assertTrue(expected == actual);
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
+    }
 
+    public static void equals(char expected, char actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -248,7 +410,13 @@ public final class Assertion {
      * @param actual
      */
     public void assertEquals(int expected, int actual) {
+        assertTrue(expected == actual);
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
+    }
 
+    public static void equals(int expected, int actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -257,7 +425,13 @@ public final class Assertion {
      * @param actual
      */
     public void assertEquals(long expected, long actual) {
+        assertTrue(expected == actual);
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
+    }
 
+    public static void equals(long expected, long actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -266,7 +440,13 @@ public final class Assertion {
      * @param actual
      */
     public void assertEquals(float expected, float actual) {
+        assertTrue(expected == actual);
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
+    }
 
+    public static void equals(float expected, float actual) {
+        getInstance().assertEquals(expected, actual);
     }
 
     /**
@@ -275,30 +455,64 @@ public final class Assertion {
      * @param actual
      */
     public void assertEquals(double expected, double actual) {
-
+        assertTrue(expected == actual);
+        setCurrentExpected(String.valueOf(expected));
+        setCurrentActual(String.valueOf(actual));
     }
+
+    public static void equals(double expected, double actual) {
+        getInstance().assertEquals(expected, actual);
+    }
+
 
     private void markCurrentAsPassed() {
         if(isTestAvailable()) {
-            tests.get(currentTest).setPassed(true);
+            currentTestUnit.setPassed(true);
         }
     }
 
     private void markCurrentAsFailed() {
         if(isTestAvailable()) {
-            tests.get(currentTest).setPassed(false);
+            currentTestUnit.setPassed(false);
         }
     }
 
     private void setCurrentFailureMessage(String failureMessage) {
         if(isTestAvailable()) {
-            tests.get(currentTest).setFailureMessage(failureMessage);
+            currentTestUnit.setFailureMessage(failureMessage);
+        }
+    }
+
+    private void setCurrentExpected(String expected) {
+        if(isTestAvailable()) {
+            currentTestUnit.setExpected(expected);
+        }
+    }
+
+    private void setCurrentActual(String actual) {
+        if(isTestAvailable()) {
+            currentTestUnit.setActual(actual);
+        }
+    }
+
+    private void buildStringRepresentation(StringBuilder b, Object elem, boolean last) {
+        if(!last) {
+            b.append(elem.toString());
+            b.append(",");
+        } else {
+            b.append(elem.toString());
         }
     }
 
 
 
-    private static class Test {
+    private static class TestUnit {
+
+        private static final String NAME_TAG = "NAME";
+        private static final String EXPECTED_TAG = "EXP ";
+        private static final String ACTUAL_TAG = "ACT ";
+        private static final String STATUS_TAG = "STAT";
+        private static final String FAILURE_TAG = "FAIL";
 
         public static final String FAILURE_DIFFERENT_LENGTH = "LENGTHS ARE DIFFERENT";
         public static final String FAILURE_NULL_ARRAY_REFERENCE = "NULL ARRAY";
@@ -312,11 +526,12 @@ public final class Assertion {
         private String passedStatusMessage;
         private String failedStatusMessage;
         private String failureMessage;
-        private boolean printOnError;
         private boolean passed;
 
-        public Test(String defaultName) {
+        public TestUnit(String defaultName) {
             this.name = defaultName;
+            this.passedStatusMessage = Assertion.TEST_DEFAULT_PASSED_MESSAGE;
+            this.failedStatusMessage = Assertion.TEST_DEFAULT_FAILED_MESSAGE;
         }
 
         public void setName(String name) {
@@ -343,9 +558,6 @@ public final class Assertion {
             this.failureMessage = failureMessage;
         }
 
-        public void setPrintOnError(boolean printOnError) {
-            this.printOnError = printOnError;
-        }
 
         public void setPassed(boolean passed) {
             this.passed = passed;
@@ -355,13 +567,19 @@ public final class Assertion {
             return passed;
         }
 
-        public boolean isPrintOnError() {
-            return printOnError;
-        }
 
         @Override
         public String toString() {
-            return null;
+            StringBuilder builder = new StringBuilder();
+            builder.append(NAME_TAG).append("\t").append(name).append("\n");
+            builder.append(EXPECTED_TAG).append("\t").append(expected).append("\n");
+            builder.append(ACTUAL_TAG).append("\t").append(actual).append("\n");
+            String message = (passed) ? passedStatusMessage : failedStatusMessage;
+            builder.append(STATUS_TAG).append("\t").append(message).append("\n");
+            if(!passed) {
+                builder.append(FAILURE_TAG).append("\t").append(failureMessage).append("\n");
+            }
+            return builder.toString();
         }
     }
 
