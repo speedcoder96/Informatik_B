@@ -168,7 +168,7 @@ public final class Assert {
         if(currentTestUnit != null) {
             return true;
         } else {
-            throw new Assert.NoSuchAssertionTestException("There is no Assert test unit to name. " +
+            throw new NoSuchAssertionTestException("There is no Assert test unit to name. " +
                     "Please invoke createTestUnit method.");
         }
     }
@@ -553,7 +553,58 @@ public final class Assert {
 
     public static final class Interval {
 
+        private static final String BETWEEN_INCL_BOUNDS_STRING = "Between Including Bounds : ";
+        private static final String BETWEEN_EXCL_BOUNDS_STRING = "Between Excluding Bounds : ";
+
         private Interval() {}
+
+        public static void betweenIncludingBounds(double lowerBound, double upperBound, double value) {
+            Bool.assertTrue(lowerBound <= value && value <= upperBound);
+            instance.setCurrentExpected(BETWEEN_INCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenIncludingBounds(float lowerBound, float upperBound, float value) {
+            Bool.assertTrue(lowerBound <= value && value <= upperBound);
+            instance.setCurrentExpected(BETWEEN_INCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenIncludingBounds(int lowerBound, int upperBound, int value) {
+            Bool.assertTrue(lowerBound <= value && value <= upperBound);
+            instance.setCurrentExpected(BETWEEN_INCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenIncludingBounds(long lowerBound, long upperBound, long value) {
+            Bool.assertTrue(lowerBound <= value && value <= upperBound);
+            instance.setCurrentExpected(BETWEEN_INCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenExcludingBounds(double lowerBound, double upperBound, double value) {
+            Bool.assertTrue(lowerBound < value && value < upperBound);
+            instance.setCurrentExpected(BETWEEN_EXCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenExcludingBounds(float lowerBound, float upperBound, float value) {
+            Bool.assertTrue(lowerBound < value && value < upperBound);
+            instance.setCurrentExpected(BETWEEN_EXCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenExcludingBounds(int lowerBound, int upperBound, int value) {
+            Bool.assertTrue(lowerBound < value && value < upperBound);
+            instance.setCurrentExpected(BETWEEN_EXCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
+
+        public static void betweenExcludingBounds(long lowerBound, long upperBound, long value) {
+            Bool.assertTrue(lowerBound < value && value < upperBound);
+            instance.setCurrentExpected(BETWEEN_EXCL_BOUNDS_STRING + lowerBound + " -- " + upperBound);
+            instance.setCurrentActual(String.valueOf(value));
+        }
 
     }
 

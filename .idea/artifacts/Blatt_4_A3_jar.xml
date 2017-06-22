@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Blatt 4 A3:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Blatt_4_A3_jar</output-path>
+    <root id="archive" name="Blatt 4 A3.jar">
+      <element id="module-output" name="Blatt 4 A3" />
+    </root>
+  </artifact>
+</component>

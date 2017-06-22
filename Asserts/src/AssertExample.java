@@ -59,6 +59,14 @@ public class AssertExample {
         //4. FOR CREATING ANOTHER TEST start at step 1. again
         //5. IF ALL TESTS ARE REGISTERED call the results() method two print the results (Assert.results())
 
+
+        Assert.create();
+        Assert.name("Between");
+        Assert.Interval.betweenIncludingBounds(30, 60, 40);
+        Assert.results();
+
     }
+
+
 
 }
