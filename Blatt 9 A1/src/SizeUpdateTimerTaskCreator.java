@@ -14,14 +14,14 @@ public class SizeUpdateTimerTaskCreator {
         //ensures that only a program start containing one argument
         //can execute a FileSizeUpdateTimerTask
         if(args.length == 1) {
-            File file = new File(args[0]);
-            if(file.exists()) {
+            File rootFile = new File(args[0]);
+            if(rootFile.exists()) {
                 //creating timer task and the corresponding timer to schedule the
                 //timer task
-                TimerTask task = new FileSizeUpdateTimerTask(file);
+                TimerTask task = new FileSizeUpdateTimerTask(rootFile);
                 Timer timer = new Timer();
                 //ensure that the timer gets canceled when the program is terminated
-                Runtime.getRuntime().addShutdownHook(new ShutDownHookThread(timer, file));
+                Runtime.getRuntime().addShutdownHook(new ShutDownHookThread(timer, rootFile));
                 //schedule the task on delay 0ms and period 1000ms
                 timer.schedule(task, 0, 1000);
             } else {
