@@ -1,0 +1,6 @@
+Informatik ist die „Wissenschaft von der systematischen Darstellung,
+Speicherung, Verarbeitung und Übertragung von Informationen, besonders
+der automatischen Verarbeitung mithilfe von Digitalrechnern“.[1] Historisch hat
+sich die Informatik einerseits als Formalwissenschaft aus der Mathematik entwickelt,
+andererseits als Ingenieursdisziplin aus dem praktischen Bedarf nach der schnellen und
+insbesondere automatischen Ausführung von Berechnungen.
