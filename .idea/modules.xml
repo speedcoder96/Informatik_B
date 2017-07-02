@@ -26,6 +26,8 @@
       <module fileurl="file://$PROJECT_DIR$/Blatt 9 A2/Blatt 9 A2.iml" filepath="$PROJECT_DIR$/Blatt 9 A2/Blatt 9 A2.iml" />
       <module fileurl="file://$PROJECT_DIR$/Blatt 9 A3/Blatt 9 A3.iml" filepath="$PROJECT_DIR$/Blatt 9 A3/Blatt 9 A3.iml" />
       <module fileurl="file://$PROJECT_DIR$/Informatik B.iml" filepath="$PROJECT_DIR$/Informatik B.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MineSweeper/MineSweeper.iml" filepath="$PROJECT_DIR$/MineSweeper/MineSweeper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Uebung/Uebung.iml" filepath="$PROJECT_DIR$/Uebung/Uebung.iml" />
     </modules>
   </component>
 </project>

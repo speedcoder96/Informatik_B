@@ -47,7 +47,7 @@ public class SearchPattern extends FileVisitorAdapter implements SearchPatternFi
         searchResults = new ConcurrentHashMap<>();
         currentStartedThreads = new ArrayList<SearchPatternFileThread>();
         //lambda expression: instead of writing new Thread.UncaughtExceptionHandler() {public void uncaughtException(...)....}
-        handler = (Thread t, Throwable e) -> {printError(e.getMessage());};
+        handler = (Thread t, Throwable e) -> printError(e.getMessage());
     }
 
     @Override
@@ -89,6 +89,7 @@ public class SearchPattern extends FileVisitorAdapter implements SearchPatternFi
 
     @Override
     public String toString() {
+        int totalMatchCount = 0;
         StringBuilder builder = new StringBuilder();
         Set<Map.Entry<File, List<SearchResult>>> resultEntrySet = searchResults.entrySet();
         for(Map.Entry<File, List<SearchResult>> entry : resultEntrySet) {
@@ -100,12 +101,15 @@ public class SearchPattern extends FileVisitorAdapter implements SearchPatternFi
                 for(SearchResult result : results) {
                     builder.append(result);
                     builder.append("\n");
+
+                    totalMatchCount += result.getMatchCount();
                 }
             } else {
                 builder.append("No Search Results");
                 builder.append("\n");
             }
         }
+        builder.append("Total Match Count: ").append(totalMatchCount);
         return builder.toString();
     }
 
@@ -129,7 +133,6 @@ public class SearchPattern extends FileVisitorAdapter implements SearchPatternFi
 
     public static void main(String[] args) {
         boolean recursive = false;
-        String search = null;
         boolean argumentsRead = false;
         int i = 0;
         while (!argumentsRead && i < args.length) {
@@ -144,7 +147,7 @@ public class SearchPattern extends FileVisitorAdapter implements SearchPatternFi
             }
         }
         //retrieves the regex argument
-        search = retrieveArgument(args, i, null);
+        String search = retrieveArgument(args, i, null);
         if(search == null) {
             printError("No search expression");
         } else {
