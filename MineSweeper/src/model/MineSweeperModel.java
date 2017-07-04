@@ -21,27 +21,36 @@ public abstract class MineSweeperModel extends Observable {
         this.currentGameState = currentGameState;
     }
 
-    public GameState getCurrentGameState() {
-        return currentGameState;
-    }
     public boolean isSolved() {
         return currentGameState == GameState.SOLVED;
     }
     public boolean isGameOver() {
         return currentGameState == GameState.GAME_OVER;
     }
-    public void notifyUIUpdate() {
-        setChanged();
-        notifyObservers();
+
+    public GameState getCurrentGameState() {
+        return currentGameState;
     }
 
+    public void notifyUIUpdate(Object args) {
+        setChanged();
+        notifyObservers(args);
+    }
+
+    public void notifyUIUpdate() {
+        notifyUIUpdate(null);
+    }
+
+    public abstract void reset(int width, int height, int mineCount);
     public abstract void flag(int x, int y);
     public abstract boolean isFlagged(int x, int y);
+    public abstract int getFlagCount();
     public abstract void reveal(int x, int y);
     public abstract boolean isRevealed(int x, int y);
     public abstract boolean isMine(int x, int y);
-    public abstract boolean isDefused(int x, int y);
+    public abstract int getMineCount();
     public abstract int getAdjacentMineCount(int x, int y);
+    public abstract int getRevealedTileCount();
     public abstract int getFieldWidth();
     public abstract int getFieldHeight();
 

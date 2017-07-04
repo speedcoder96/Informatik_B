@@ -1,7 +1,7 @@
 package controller;
 
 import model.MineSweeperModel;
-import view.TileButtonView;
+import view.MineSweeperTileButtonView;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,7 +20,7 @@ public class MineSweeperController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        TileButtonView tileButtonView = (TileButtonView)e.getSource();
+        MineSweeperTileButtonView tileButtonView = (MineSweeperTileButtonView)e.getSource();
         switch(e.getButton()) {
             case MouseEvent.BUTTON1:
                 model.reveal(tileButtonView.getFieldX(), tileButtonView.getFieldY());

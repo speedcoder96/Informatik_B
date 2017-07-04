@@ -7,6 +7,7 @@ public class MineSweeperTile {
 
     private int x;
     private int y;
+    private Property property;
     private boolean revealed;
     private boolean flagged;
     private boolean mine;
@@ -15,10 +16,7 @@ public class MineSweeperTile {
     public MineSweeperTile(int x, int y) {
         this.x = x;
         this.y = y;
-        this.flagged = false;
-        this.mine = false;
-        this.revealed = false;
-        this.adjacentMineCount = 0;
+        property = new Property();
     }
 
     public int getX() {
@@ -29,67 +27,77 @@ public class MineSweeperTile {
         return y;
     }
 
-    public void setMine(boolean mine) {
-        this.mine = mine;
+    public Property getProperty() {
+        return property;
     }
 
-    public boolean isMine() {
-        return mine;
+    public void setMine(boolean mine) {
+        property.mine = mine;
     }
 
     public void reveal() {
-        if(!flagged)
-            this.revealed = true;
+        property.revealed = true;
     }
 
     public void flag() {
-        flagged = !flagged;
-    }
-
-    public boolean isFlagged() {
-        return flagged;
-    }
-
-    public boolean isRevealed() {
-        return revealed;
-    }
-
-    public boolean isDefused() {
-        return mine && flagged;
+        property.flagged = !property.flagged;
     }
 
     public void setAdjacentMineCount(int adjacentMineCount) {
-        this.adjacentMineCount = adjacentMineCount;
-    }
-
-    public int getAdjacentMineCount() {
-        return adjacentMineCount;
+        property.adjacentMineCount = adjacentMineCount;
     }
 
     public boolean hasAdjacentMines() {
-        return adjacentMineCount != 0;
+        return property.adjacentMineCount != 0;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        if(revealed) {
-            if(mine) {
-                if(flagged) {
-                    builder.append("[").append("M").append("]");
-                } else {
-                    builder.append("M");
-                }
-            } else {
-                if(flagged) {
-                    builder.append("[").append(adjacentMineCount).append("]");
-                } else {
-                    builder.append(adjacentMineCount);
-                }
-            }
-        } else {
-            builder.append("?");
+
+    public static class Property {
+        private boolean revealed;
+        private boolean flagged;
+        private boolean mine;
+        private int adjacentMineCount;
+        public Property() {
+            this(false, false, false, 0);
         }
-        return builder.toString();
+
+        public Property(boolean revealed, boolean flagged, boolean mine, int adjacentMineCount) {
+            this.revealed = revealed;
+            this.flagged = flagged;
+            this.mine = mine;
+            this.adjacentMineCount = adjacentMineCount;
+        }
+
+        public static Property fromModel(MineSweeperModel model, int x, int y) {
+            if(model != null) {
+                return new Property(model, x, y);
+            }
+            return null;
+        }
+
+        private Property(MineSweeperModel model, int x, int y) {
+            this(model.isRevealed(x, y), model.isFlagged(x, y), model.isMine(x, y), model.getAdjacentMineCount(x, y));
+        }
+
+        public boolean isRevealed() {
+            return revealed;
+        }
+
+        public boolean isFlagged() {
+            return flagged;
+        }
+
+        public boolean isMine() {
+            return mine;
+        }
+
+        public boolean isDefused() {
+            return mine && flagged;
+        }
+
+        public int getAdjacentMineCount() {
+            return adjacentMineCount;
+        }
     }
+
 }

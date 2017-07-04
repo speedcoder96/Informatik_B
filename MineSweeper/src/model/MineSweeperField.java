@@ -10,8 +10,10 @@ import java.util.Random;
 public class MineSweeperField {
 
     private MineSweeperTile[][] tiles;
+    private List<MineSweeperTile> mines;
     private int width;
     private int height;
+    private int revealedTileCount;
     private int mineCount;
 
     /**
@@ -63,13 +65,15 @@ public class MineSweeperField {
     private void placeRandomMines(MineSweeperTile[][] tiles) {
         boolean minePlaced = false;
         Random r = new Random();
+        mines = new ArrayList<>(mineCount);
         for(int i = 0; i < mineCount; i++) {
             minePlaced = false;
             do {
                 int randX = r.nextInt(width);
                 int randY = r.nextInt(height);
-                if(!tiles[randY][randX].isMine()) {
+                if(!tiles[randY][randX].getProperty().isMine()) {
                     tiles[randY][randX].setMine(true);
+                    mines.add(tiles[randY][randX]);
                     minePlaced = true;
                 }
             } while(!minePlaced);
@@ -88,7 +92,7 @@ public class MineSweeperField {
                 int adjacentMineCount = 0;
                 List<MineSweeperTile> adjacentTiles = getAdjacentTiles(current);
                 for(MineSweeperTile adjacentTile : adjacentTiles) {
-                    if(adjacentTile.isMine()) {
+                    if(adjacentTile.getProperty().isMine()) {
                         adjacentMineCount++;
                     }
                 }
@@ -140,7 +144,7 @@ public class MineSweeperField {
         MineSweeperTile current = getTile(x, y);
         boolean previousState = false;
         if(current != null) {
-            previousState = current.isFlagged();
+            previousState = current.getProperty().isFlagged();
             current.flag();
         }
         return previousState;
@@ -155,10 +159,35 @@ public class MineSweeperField {
      */
     public MineSweeperTile reveal(int x, int y) {
         MineSweeperTile current = getTile(x, y);
-        if(!current.isFlagged()) {
+        if(!current.getProperty().isFlagged()) {
             reveal(current);
         }
         return current;
+    }
+
+
+    /**
+     * Recursively reveals all adjacent tiles of the passed {@code tile}
+     * that don't have a mine in their moore neighbourhood
+     * @param tile the tile to reveal
+     */
+    private void reveal(MineSweeperTile tile) {
+        if(tile != null) {
+            if(!tile.getProperty().isRevealed()) {
+                tile.reveal();
+                revealedTileCount++;
+                if(!tile.hasAdjacentMines()) {
+                    List<MineSweeperTile> adjacentTiles = getAdjacentTiles(tile);
+                    for(MineSweeperTile adjacentTile : adjacentTiles) {
+                        reveal(adjacentTile);
+                    }
+                }
+            }
+        }
+    }
+
+    public int getRevealedTileCount() {
+        return revealedTileCount;
     }
 
     /**
@@ -173,23 +202,33 @@ public class MineSweeperField {
     }
 
     /**
-     * Recursively reveals all adjacent tiles of the passed {@code tile}
-     * that don't have a mine in their moore neighbourhood
-     * @param tile the tile to reveal
+     * Returns whether or not the field is solved.
+     * @return solved
      */
-    private void reveal(MineSweeperTile tile) {
-        if(tile != null) {
-            if(!tile.isRevealed()) {
-                tile.reveal();
-                if(!tile.hasAdjacentMines()) {
-                    List<MineSweeperTile> adjacentTiles = getAdjacentTiles(tile);
-                    for(MineSweeperTile adjacentTile : adjacentTiles) {
-                        reveal(adjacentTile);
+    public boolean isSolved() {
+        boolean solved = true;
+        for(MineSweeperTile[] row : tiles) {
+            for(MineSweeperTile tile : row) {
+                if(!mines.contains(tile)) {
+                    if(!tile.getProperty().isRevealed()) {
+                        solved = false;
+                        break;
                     }
                 }
             }
         }
+        //if still solved from check above, check if all mines are defused
+        if(solved) {
+            for(MineSweeperTile mine : mines) {
+                if(!mine.getProperty().isDefused()) {
+                    solved = false;
+                    break;
+                }
+            }
+        }
+        return solved;
     }
+
 
     /**
      * Returns the tile located at the coordinates {@code x} and {@code y}

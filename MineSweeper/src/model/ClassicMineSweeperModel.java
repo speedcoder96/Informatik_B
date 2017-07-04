@@ -1,47 +1,90 @@
 package model;
 
+
+
 /**
  * Created by Rene Sommerfeld on 28.06.2017.
  */
 public class ClassicMineSweeperModel extends MineSweeperModel {
-
     private MineSweeperField field;
     private int flagCount;
 
     public ClassicMineSweeperModel(int fieldWidth, int fieldHeight, int mineCount) {
-        setCurrentGameState(MineSweeperModel.GameState.RUNNING);
-        field = new MineSweeperField(fieldWidth, fieldHeight, mineCount);
+        reset(fieldWidth, fieldHeight, mineCount);
+    }
+
+    @Override
+    public void reset(int width, int height, int mineCount) {
+        field = new MineSweeperField(width, height, mineCount);
+        setCurrentGameState(GameState.RUNNING);
         flagCount = 0;
+        notifyUIUpdate();
     }
 
     @Override
     public void flag(int x, int y) {
-        boolean previousState = field.flag(x, y);
-        flagCount = (previousState) ? flagCount - 1 : flagCount + 1;
-        notifyUIUpdate();
+        if(!isRevealed(x, y)) {
+            if(!isFlagged(x, y) && flagCount < field.getMineCount()) {
+                flagCount++;
+                field.flag(x, y);
+            } else if(isFlagged(x, y)) {
+                flagCount--;
+                field.flag(x, y);
+            }
+            boolean solved = field.isSolved();
+            if(solved) {
+                handleSolved();
+            }
+            notifyUIUpdate();
+        }
+    }
+
+    @Override
+    public int getFlagCount() {
+        return flagCount;
+    }
+
+    @Override
+    public int getMineCount() {
+        return field.getMineCount();
     }
 
     @Override
     public void reveal(int x, int y) {
-        MineSweeperTile current = field.reveal(x, y);
-        if(current != null) {
-            if(current.isMine()) {
-                handleGameOver();
+        if(!isRevealed(x, y) && !isFlagged(x, y)) {
+            MineSweeperTile current = field.reveal(x, y);
+            if(current != null) {
+                if(current.getProperty().isMine()) {
+                    handleGameOver();
+                } else {
+                    if(field.isSolved()) {
+                        handleSolved();
+                    }
+                }
             }
+            notifyUIUpdate();
         }
-        notifyUIUpdate();
+    }
+
+    @Override
+    public int getRevealedTileCount() {
+        return field.getRevealedTileCount();
     }
 
     private void handleGameOver() {
-        setCurrentGameState(MineSweeperModel.GameState.GAME_OVER);
+        setCurrentGameState(GameState.GAME_OVER);
         field.revealAll();
+    }
+
+    private void handleSolved() {
+        setCurrentGameState(GameState.SOLVED);
     }
 
     @Override
     public boolean isFlagged(int x, int y) {
         MineSweeperTile current = field.getTile(x, y);
         if(current != null) {
-            return current.isFlagged();
+            return current.getProperty().isFlagged();
         }
         return false;
     }
@@ -50,7 +93,7 @@ public class ClassicMineSweeperModel extends MineSweeperModel {
     public boolean isRevealed(int x, int y) {
         MineSweeperTile current = field.getTile(x, y);
         if(current != null) {
-            return current.isRevealed();
+            return current.getProperty().isRevealed();
         }
         return false;
     }
@@ -59,16 +102,7 @@ public class ClassicMineSweeperModel extends MineSweeperModel {
     public boolean isMine(int x, int y) {
         MineSweeperTile current = field.getTile(x, y);
         if(current != null) {
-            return current.isMine();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isDefused(int x, int y) {
-        MineSweeperTile current = field.getTile(x, y);
-        if(current != null) {
-            return current.isDefused();
+            return current.getProperty().isMine();
         }
         return false;
     }
@@ -77,7 +111,7 @@ public class ClassicMineSweeperModel extends MineSweeperModel {
     public int getAdjacentMineCount(int x, int y) {
         MineSweeperTile current = field.getTile(x, y);
         if(current != null) {
-            return current.getAdjacentMineCount();
+            return current.getProperty().getAdjacentMineCount();
         }
         return -1;
     }
