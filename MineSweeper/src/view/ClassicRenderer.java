@@ -37,26 +37,29 @@ public class ClassicRenderer implements MineSweeperTileButtonView.Renderer {
     }
 
     @Override
-    public void render(MineSweeperTileButtonView view, MineSweeperTile.Property property) {
-        if(property.isRevealed()) {
-            if(property.isMine()) {
-                view.setText("");
-                view.setBackground(Color.RED);
-            } else {
-                view.setText(String.valueOf(property.getAdjacentMineCount()));
-                view.setForeground(RGBCode.toRGBCode(property.getAdjacentMineCount()).getColor());
-                view.setBackground(new Color(224, 224, 224));
-            }
-        } else {
-            if(property.isFlagged()) {
-                view.setText(FLAGGED_STRING);
-                view.setBackground(Color.YELLOW);
-            } else {
-                view.setText(NOT_REVEALED_STRING);
-                view.setForeground(Color.BLACK);
-                view.setBackground(new Color(192,192,192));
-            }
-        }
+    public void renderRevealedTile(MineSweeperTileButtonView view, int adjacentMineCount) {
+        view.setText(String.valueOf(adjacentMineCount));
+        view.setForeground(RGBCode.toRGBCode(adjacentMineCount).getColor());
+        view.setBackground(new Color(224, 224, 224));
+    }
+
+    @Override
+    public void renderNonRevealedTile(MineSweeperTileButtonView view) {
+        view.setText(NOT_REVEALED_STRING);
+        view.setForeground(Color.BLACK);
+        view.setBackground(new Color(192,192,192));
+    }
+
+    @Override
+    public void renderFlaggedTile(MineSweeperTileButtonView view) {
+        view.setText(FLAGGED_STRING);
+        view.setBackground(Color.YELLOW);
+    }
+
+    @Override
+    public void renderRevealedMineTile(MineSweeperTileButtonView view) {
+        view.setText("");
+        view.setBackground(Color.RED);
     }
 
 }

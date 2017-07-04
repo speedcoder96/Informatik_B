@@ -1,7 +1,6 @@
 package view;
 
 import model.MineSweeperModel;
-import model.MineSweeperTile;
 
 import javax.swing.*;
 import java.util.Observable;
@@ -38,12 +37,31 @@ public class MineSweeperTileButtonView extends JButton implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         if(renderer != null) {
-            renderer.render(this, MineSweeperTile.Property.fromModel(mineSweeperModel, fieldX, fieldY));
+            boolean revealed = mineSweeperModel.isRevealed(fieldX, fieldY);
+            boolean flagged = mineSweeperModel.isFlagged(fieldX, fieldY);
+            boolean mine = mineSweeperModel.isMine(fieldX, fieldY);
+            int adjacentMineCount = mineSweeperModel.getAdjacentMineCount(fieldX, fieldY);
+            if(revealed) {
+                if(mine) {
+                    renderer.renderRevealedMineTile(this);
+                } else {
+                    renderer.renderRevealedTile(this, adjacentMineCount);
+                }
+            } else {
+                if(flagged) {
+                    renderer.renderFlaggedTile(this);
+                } else {
+                    renderer.renderNonRevealedTile(this);
+                }
+            }
         }
     }
 
     public static interface Renderer {
-        public void render(MineSweeperTileButtonView view, MineSweeperTile.Property property);
+        public void renderRevealedTile(MineSweeperTileButtonView view, int adjacentMineCount);
+        public void renderNonRevealedTile(MineSweeperTileButtonView view);
+        public void renderRevealedMineTile(MineSweeperTileButtonView view);
+        public void renderFlaggedTile(MineSweeperTileButtonView view);
     }
 
 }

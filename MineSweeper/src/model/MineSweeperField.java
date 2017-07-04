@@ -9,11 +9,29 @@ import java.util.Random;
  */
 public class MineSweeperField {
 
+    /**
+     * Holds all tiles of the field
+     */
     private MineSweeperTile[][] tiles;
+    /**
+     * Holds all mines of the field
+     */
     private List<MineSweeperTile> mines;
+    /**
+     * Defines the width of the field
+     */
     private int width;
+    /**
+     * Defines the height of the field
+     */
     private int height;
+    /**
+     * Defines the amount of tiles revealed
+     */
     private int revealedTileCount;
+    /**
+     * Defines the amount of mines on the field
+     */
     private int mineCount;
 
     /**
@@ -71,7 +89,7 @@ public class MineSweeperField {
             do {
                 int randX = r.nextInt(width);
                 int randY = r.nextInt(height);
-                if(!tiles[randY][randX].getProperty().isMine()) {
+                if(!tiles[randY][randX].isMine()) {
                     tiles[randY][randX].setMine(true);
                     mines.add(tiles[randY][randX]);
                     minePlaced = true;
@@ -92,7 +110,7 @@ public class MineSweeperField {
                 int adjacentMineCount = 0;
                 List<MineSweeperTile> adjacentTiles = getAdjacentTiles(current);
                 for(MineSweeperTile adjacentTile : adjacentTiles) {
-                    if(adjacentTile.getProperty().isMine()) {
+                    if(adjacentTile.isMine()) {
                         adjacentMineCount++;
                     }
                 }
@@ -144,7 +162,7 @@ public class MineSweeperField {
         MineSweeperTile current = getTile(x, y);
         boolean previousState = false;
         if(current != null) {
-            previousState = current.getProperty().isFlagged();
+            previousState = current.isFlagged();
             current.flag();
         }
         return previousState;
@@ -159,7 +177,7 @@ public class MineSweeperField {
      */
     public MineSweeperTile reveal(int x, int y) {
         MineSweeperTile current = getTile(x, y);
-        if(!current.getProperty().isFlagged()) {
+        if(!current.isFlagged()) {
             reveal(current);
         }
         return current;
@@ -173,7 +191,7 @@ public class MineSweeperField {
      */
     private void reveal(MineSweeperTile tile) {
         if(tile != null) {
-            if(!tile.getProperty().isRevealed()) {
+            if(!tile.isRevealed()) {
                 tile.reveal();
                 revealedTileCount++;
                 if(!tile.hasAdjacentMines()) {
@@ -191,7 +209,7 @@ public class MineSweeperField {
     }
 
     /**
-     * Reveals all.
+     * Reveals all tiles
      */
     public void revealAll() {
         for(MineSweeperTile[] row : tiles) {
@@ -210,7 +228,7 @@ public class MineSweeperField {
         for(MineSweeperTile[] row : tiles) {
             for(MineSweeperTile tile : row) {
                 if(!mines.contains(tile)) {
-                    if(!tile.getProperty().isRevealed()) {
+                    if(!tile.isRevealed()) {
                         solved = false;
                         break;
                     }
@@ -220,12 +238,14 @@ public class MineSweeperField {
         //if still solved from check above, check if all mines are defused
         if(solved) {
             for(MineSweeperTile mine : mines) {
-                if(!mine.getProperty().isDefused()) {
+                if(!mine.isDefused()) {
                     solved = false;
                     break;
                 }
             }
         }
+
+        //probably better alternative : (width * height) - mineCount - revealedTileCount == 0;
         return solved;
     }
 
