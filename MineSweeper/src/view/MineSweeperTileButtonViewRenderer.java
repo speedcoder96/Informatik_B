@@ -7,7 +7,7 @@ import java.awt.*;
 /**
  * Created by Rene Sommerfeld on 30.06.2017.
  */
-public class ClassicRenderer implements MineSweeperTileButtonView.Renderer {
+public class MineSweeperTileButtonViewRenderer implements MineSweeperTileButtonView.Renderer {
 
     private static final String NOT_REVEALED_STRING = "?";
     private static final String FLAGGED_STRING = "X";

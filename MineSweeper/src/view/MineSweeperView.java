@@ -21,7 +21,7 @@ public class MineSweeperView extends JPanel implements Observer {
 
     public MineSweeperView(MineSweeperModel model) {
         this.model = model;
-        renderer = new ClassicRenderer();
+        renderer = new MineSweeperTileButtonViewRenderer();
 
         //set the border layout to layout the two panels accordingly
         setLayout(new BorderLayout());
