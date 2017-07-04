@@ -20,7 +20,7 @@ public class MineSweeper extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MineSweeperModel model = new ClassicMineSweeperModel(10, 10, );
+            MineSweeperModel model = new ClassicMineSweeperModel(10, 10, 3);
             MineSweeperView view = new MineSweeperView(model);
             MineSweeper ms = new MineSweeper(view);
             ms.pack();

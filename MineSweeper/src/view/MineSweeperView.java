@@ -17,7 +17,7 @@ public class MineSweeperView extends JPanel implements Observer {
 
     private MineSweeperModel model;
     private JLabel flagCountLabel, toRevealTileCountLabel;
-    private ClassicRenderer renderer;
+    private MineSweeperTileButtonView.Renderer renderer;
 
     public MineSweeperView(MineSweeperModel model) {
         this.model = model;
@@ -38,7 +38,7 @@ public class MineSweeperView extends JPanel implements Observer {
         mineCountLabel.setFont(MAIN_FONT.deriveFont(20.0f));
         toRevealTileCountLabel.setFont(MAIN_FONT.deriveFont(20.0f));
 
-        //display the mine count at its labels
+        //display the mine count at its label
         mineCountLabel.setText(String.format("Mines : %3d", model.getMineCount()));
         toRevealTileCountLabel.setText(String.format("Tiles to reveal : %3d",
                 (model.getFieldWidth() * model.getFieldHeight()) - (model.getMineCount() + model.getRevealedTileCount())));
